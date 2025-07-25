@@ -32,19 +32,14 @@ export async function POST(request: NextRequest) {
     
     // Validate and sanitize inputs
     const firstName = validateInput(formData.firstName, 50)
-    const lastName = validateInput(formData.lastName, 50)
     const companyName = validateInput(formData.companyName, 100)
     const businessType = validateInput(formData.businessType, 100)
     const businessDescription = validateInput(formData.businessDescription, 2000)
-    const marketingLocation = validateInput(formData.marketingLocation, 100)
     const city = validateInput(formData.city, 50)
-    const country = validateInput(formData.country, 50)
-    const websiteUrl = formData.websiteUrl ? validateInput(formData.websiteUrl, 200) : null
     const email = validateInput(formData.email, 254)
 
     // Validate required fields after sanitization
-    if (!firstName || !lastName || !companyName || !businessType || 
-        !businessDescription || !marketingLocation || !city || !country || !email) {
+    if (!firstName || !companyName || !businessType || !businessDescription || !city || !email) {
       return NextResponse.json({ error: 'All required fields must be provided and non-empty' }, { status: 400 })
     }
 
@@ -61,15 +56,11 @@ export async function POST(request: NextRequest) {
       .from('leads')
       .insert({
         first_name: firstName,
-        last_name: lastName,
         company_name: companyName,
-        website_url: websiteUrl,
         email: email,
         business_type: businessType,
         business_description: businessDescription,
-        marketing_location: marketingLocation,
         city: city,
-        country: country,
         short_hash: shortHash
       })
       .select()
@@ -83,15 +74,11 @@ export async function POST(request: NextRequest) {
     // Create sanitized form data object
     const sanitizedFormData = {
       firstName,
-      lastName,
       companyName,
-      websiteUrl,
       email,
       businessType,
       businessDescription,
-      marketingLocation,
-      city,
-      country
+      city
     }
 
     // Start background script generation process

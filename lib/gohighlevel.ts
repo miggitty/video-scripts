@@ -1,23 +1,28 @@
 interface Lead {
   id: string
   first_name: string
-  last_name: string
   company_name: string
   email: string
   city: string
-  country: string
-  website_url?: string
 }
 
 interface FormData {
+  firstName: string
+  companyName: string
+  email: string
   businessType: string
   businessDescription: string
-  marketingLocation: string
-  websiteUrl?: string
+  city: string
 }
 
 export async function addToGoHighLevel(lead: Lead, formData: FormData) {
   try {
+    // Check if GoHighLevel integration is configured
+    if (!process.env.GOHIGHLEVEL_API_KEY || !process.env.GOHIGHLEVEL_LOCATION_ID) {
+      console.log('GoHighLevel integration not configured - skipping')
+      return
+    }
+
     // Create contact in GoHighLevel
     const contactResponse = await fetch('https://services.leadconnectorhq.com/contacts/', {
       method: 'POST',
@@ -27,11 +32,10 @@ export async function addToGoHighLevel(lead: Lead, formData: FormData) {
       },
       body: JSON.stringify({
         firstName: lead.first_name,
-        lastName: lead.last_name,
+        lastName: '', // Default empty since we don't collect last name
         email: lead.email,
         companyName: lead.company_name,
         city: lead.city,
-        country: lead.country,
         source: 'Transformo AI Content Strategist',
         locationId: process.env.GOHIGHLEVEL_LOCATION_ID,
         customFields: [
@@ -42,21 +46,20 @@ export async function addToGoHighLevel(lead: Lead, formData: FormData) {
           {
             key: 'business_description',
             field_value: formData.businessDescription
-          },
-          {
-            key: 'marketing_location',
-            field_value: formData.marketingLocation
-          },
-          {
-            key: 'website_url',
-            field_value: formData.websiteUrl || ''
           }
         ]
       })
     })
 
     if (!contactResponse.ok) {
-      throw new Error(`GoHighLevel contact creation failed: ${contactResponse.status}`)
+      const errorText = await contactResponse.text()
+      console.error('GoHighLevel API Error Response:', {
+        status: contactResponse.status,
+        statusText: contactResponse.statusText,
+        body: errorText,
+        headers: Object.fromEntries(contactResponse.headers.entries())
+      })
+      throw new Error(`GoHighLevel contact creation failed: ${contactResponse.status} - ${errorText}`)
     }
 
     const contact = await contactResponse.json()
@@ -97,6 +100,7 @@ export async function addToGoHighLevel(lead: Lead, formData: FormData) {
     console.log('Successfully added lead to GoHighLevel:', contactId)
   } catch (error) {
     console.error('Error adding to GoHighLevel:', error)
-    throw error
+    // Don't throw error to prevent breaking the main flow
+    // GoHighLevel integration failure shouldn't stop script generation
   }
 }

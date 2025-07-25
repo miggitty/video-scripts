@@ -6,7 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Progress } from '@/components/ui/progress'
-import { Loader2, CheckCircle, Play } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { Logo } from '@/components/logo'
+import { Loader2, CheckCircle } from 'lucide-react'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -114,12 +116,12 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md text-center">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md text-center bg-card border-border">
           <CardContent className="pt-6">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Loading Your Results...</h3>
-            <p className="text-gray-600">Please wait while we prepare your personalized video scripts.</p>
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+            <h3 className="text-lg font-semibold mb-2 text-foreground">Loading Your Results...</h3>
+            <p className="text-muted-foreground">Please wait while we prepare your personalized video scripts.</p>
           </CardContent>
         </Card>
       </div>
@@ -128,11 +130,11 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md text-center">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md text-center bg-card border-border">
           <CardContent className="pt-6">
-            <h3 className="text-lg font-semibold mb-2 text-red-600">Error</h3>
-            <p className="text-gray-600">{error}</p>
+            <h3 className="text-lg font-semibold mb-2 text-destructive">Error</h3>
+            <p className="text-muted-foreground">{error}</p>
           </CardContent>
         </Card>
       </div>
@@ -143,34 +145,80 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
   const isComplete = scripts.length >= 20
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-background">
+      {/* Header with Logo and Theme Toggle */}
+      <div className="flex justify-between items-center pt-8 pb-6 max-w-6xl mx-auto px-4">
+        <div className="flex-1"></div>
+        <Logo />
+        <div className="flex-1 flex justify-end">
+          <ThemeToggle />
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Your AI-Generated Action Plan
+          <h1 className="text-4xl font-bold text-foreground mb-2">
+            Your 20 Video Scripts Optimized for your business.
           </h1>
-          <p className="text-xl text-gray-600">
-            Hi {lead?.first_name}! Here&apos;s your personalized marketing strategy for {lead?.company_name}
-          </p>
+          <p className="text-xl text-muted-foreground">
+            Hi {lead?.first_name}! Your personalized Video Scripts are below for {lead?.company_name}
+ Watch the video below to learn how to turn them into a complete marketing campaign.          </p>
         </div>
 
-        {/* Step 1: Scripts */}
-        <Card className="mb-8">
+        {/* Step 3: Launch Campaign - Position 1 */}
+        <Card className="mb-8 bg-card border-border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <span className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
+              Launch Your Campaign with Transformo
+            </CardTitle>
+            <CardDescription className="text-lg text-muted-foreground">
+              <strong className="text-foreground">Turn One Video Into a Complete Marketing Campaign</strong>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center">
+              <div className="aspect-video bg-background rounded-lg flex items-center justify-center mb-6 max-w-2xl mx-auto border border-border">
+                <p className="text-muted-foreground">Transformo Demo Video</p>
+              </div>
+              
+              <h3 className="text-2xl font-bold text-foreground mb-4">
+                How To Turn One Video Script Into a Complete Weekly Marketing Campaign
+              </h3>
+              <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
+                See how Transformo takes your video and automatically creates blog posts, email newsletters, 
+                and social media updates, then distributes them across the internet for you.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3">
+                  Start 7-Day Free Trial
+                </Button>
+                <Button variant="outline" size="lg" className="px-8 py-3 border-border text-foreground hover:bg-accent">
+                  Book a Live Demo
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Step 1: Scripts - Position 2 */}
+        <Card className="mb-8 bg-card border-border">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
               Get Your AI-Generated Scripts
             </CardTitle>
             <CardDescription>
               {isComplete ? (
-                <div className="flex items-center gap-2 text-green-600">
+                <div className="flex items-center gap-2 text-green-400">
                   <CheckCircle className="h-4 w-4" />
                   All 20 scripts generated successfully!
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 text-muted-foreground">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Generating your personalized scripts... ({scripts.length} of 20 complete)
                   </div>
@@ -183,18 +231,18 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
             {scripts.length > 0 ? (
               <Accordion type="single" collapsible className="w-full">
                 {scripts.map((script) => (
-                  <AccordionItem key={script.id} value={script.id}>
-                    <AccordionTrigger className="text-left">
+                  <AccordionItem key={script.id} value={script.id} className="border-border">
+                    <AccordionTrigger className="text-left text-foreground hover:text-primary">
                       <div className="flex items-center gap-3">
-                        <span className="bg-gray-100 text-gray-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                        <span className="bg-muted text-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
                           {script.order_index}
                         </span>
                         {script.title}
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans text-gray-900">
+                      <div className="bg-muted p-4 rounded-lg">
+                        <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans text-foreground">
                           {script.script_body}
                         </pre>
                       </div>
@@ -204,89 +252,10 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
               </Accordion>
             ) : (
               <div className="text-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                <p className="text-gray-600">Generating your first script...</p>
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+                <p className="text-muted-foreground">Generating your first script...</p>
               </div>
             )}
-          </CardContent>
-        </Card>
-
-        {/* Step 2: Record Video */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span className="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">2</span>
-              Record Your Video
-            </CardTitle>
-            <CardDescription>
-              Choose how you want to create your videos
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <Play className="h-4 w-4" />
-                  Option 1: Record Your Video Manually
-                </h3>
-                <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-4">
-                  <p className="text-gray-500">Manual Recording Tutorial Video</p>
-                </div>
-                <p className="text-sm text-gray-600">
-                  Learn how to record professional-looking videos with just your smartphone or webcam.
-                </p>
-              </div>
-              
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <Play className="h-4 w-4" />
-                  Option 2: Use an AI Avatar with HeyGen
-                </h3>
-                <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-4">
-                  <p className="text-gray-500">AI Avatar Tutorial Video</p>
-                </div>
-                <p className="text-sm text-gray-600">
-                  Create videos without appearing on camera using AI avatars and text-to-speech technology.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Step 3: Launch Campaign */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
-              Launch Your Campaign with Transformo
-            </CardTitle>
-            <CardDescription className="text-lg">
-              <strong>Turn One Video Into a Complete Marketing Campaign</strong>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center">
-              <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-6 max-w-2xl mx-auto">
-                <p className="text-gray-500">Transformo Demo Video</p>
-              </div>
-              
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Turn One Video Into a Complete Marketing Campaign
-              </h3>
-              <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
-                See how Transformo takes your video and automatically creates blog posts, email newsletters, 
-                and social media updates, then distributes them across the internet for you.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3">
-                  Start 7-Day Free Trial
-                </Button>
-                <Button variant="outline" size="lg" className="px-8 py-3">
-                  Book a Live Demo
-                </Button>
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>

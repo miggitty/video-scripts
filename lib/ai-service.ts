@@ -8,10 +8,10 @@ const supabase = createClient(
 interface FormData {
   businessType: string
   businessDescription: string
-  marketingLocation: string
   city: string
-  country: string
+  firstName: string
   companyName: string
+  email: string
 }
 
 async function callOpenRouter(prompt: string, retries = 3): Promise<string> {
@@ -24,7 +24,7 @@ async function callOpenRouter(prompt: string, retries = 3): Promise<string> {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'google/gemini-pro-1.5',
+          model: 'openai/gpt-4.1-mini',
           messages: [
             {
               role: 'user',
@@ -53,13 +53,13 @@ async function callOpenRouter(prompt: string, retries = 3): Promise<string> {
 export async function generateScripts(leadId: string, formData: FormData) {
   try {
     // Step 1: Generate the 20 video titles
-    const questionPrompt = `Act as a market research expert. For a ${formData.businessType} in ${formData.city}, ${formData.country} that offers these services: ${formData.businessDescription}, find and list the top 20 questions their potential customers are typing into Google when they are looking to purchase. The questions should be phrased as compelling video titles.
+    const questionPrompt = `Act as a market research expert. For a ${formData.businessType} in ${formData.city} that offers these services: ${formData.businessDescription} plus any other core services offered by this type of business, find and list the top 5 questions their potential customers are typing into Google when they are looking to purchase. The questions should be phrased as compelling video titles that are SEO optimized.
 
-Return only a numbered list of 20 titles, one per line, in this exact format:
+Return only a numbered list of 5 titles, one per line, in this exact format:
 1. [Title]
 2. [Title]
 ...
-20. [Title]`
+5. [Title]`
 
     const titlesResponse = await callOpenRouter(questionPrompt)
     
@@ -68,10 +68,10 @@ Return only a numbered list of 20 titles, one per line, in this exact format:
       .split('\n')
       .filter(line => line.match(/^\d+\./))
       .map(line => line.replace(/^\d+\.\s*/, '').trim())
-      .slice(0, 20)
+      .slice(0, 5)
 
-    if (titles.length < 20) {
-      console.warn(`Only generated ${titles.length} titles instead of 20`)
+    if (titles.length < 5) {
+      console.warn(`Only generated ${titles.length} titles instead of 5`)
     }
 
     // Step 2: Generate scripts for each title
@@ -80,7 +80,7 @@ Return only a numbered list of 20 titles, one per line, in this exact format:
       const orderIndex = i + 1
 
       try {
-        const scriptPrompt = `You are an expert YouTube scriptwriter for a ${formData.businessType} named ${formData.companyName} located in ${formData.city}, ${formData.country}. Your task is to write a high-quality, 1-2 minute video script for the title: '${title}'.
+        const scriptPrompt = `You are an expert YouTube scriptwriter for a ${formData.businessType} named ${formData.companyName} located in ${formData.city}. Your task is to write a high-quality, 1-2 minute video script for the title: '${title}'.
 
 Step 1: Research. First, perform a thorough web search on the topic '${title}' to gather the most accurate, compelling, and up-to-date information. Synthesize this research to form the core teaching points for the script.
 
@@ -92,13 +92,15 @@ Teaser (QQPP Method): Start with the QQPP (Question, Question, Promise, Preview)
 - Promise: State the value the viewer will get from watching the video.
 - Preview: Briefly mention the key points you will cover.
 
-Introduction: The presenter introduces themselves and the topic, setting expectations for the video.
+Introduction: The presenter introduces themselves and the topic, setting expectations for the video. Their name is ${formData.firstName} adn they are from the company ${formData.companyName}
 
 Teaching Segments: Break the main content into 2-3 clear, educational segments. Each segment should teach one key aspect of the topic based on your research. Use simple language and provide actionable advice.
 
 Summary: Briefly summarize the key teaching points covered in the video.
 
-Call to Action (CTA): End with a clear, direct call to action. Tell the viewer what to do next, referencing the business: 'For more advice on this, contact ${formData.companyName} today for a free consultation.'`
+Call to Action (CTA): End with a clear, direct call to action. Tell the viewer what to do next, referencing the business: 'For more advice on this, contact ${formData.companyName} today for a free consultation.'
+
+When returning the script don't include any extra text or comments, just the script. So return only what the presenter will read and nothing more. Make sure there are not headings in the script or guidance on how to read it. I just want the pure script and nothing else so we can put it in a teleprompter`
 
         const scriptBody = await callOpenRouter(scriptPrompt)
 
