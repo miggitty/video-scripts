@@ -28,7 +28,8 @@ export async function addToGoHighLevel(lead: Lead, formData: FormData) {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.GOHIGHLEVEL_API_KEY}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Version': '2021-07-28'
       },
       body: JSON.stringify({
         firstName: lead.first_name,
@@ -85,7 +86,8 @@ export async function addToGoHighLevel(lead: Lead, formData: FormData) {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${process.env.GOHIGHLEVEL_API_KEY}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Version': '2021-07-28'
           }
         }
       )
