@@ -54,7 +54,7 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
         const { data: leadData, error: leadError } = await supabase
           .from('leads')
           .select('id, first_name, company_name')
-          .eq('short_hash', hash)
+          .eq('hash', hash)
           .single()
 
         if (leadError || !leadData) {

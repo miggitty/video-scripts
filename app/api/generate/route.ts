@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         business_type: businessType,
         business_description: businessDescription,
         city: city,
-        short_hash: shortHash
+        hash: shortHash
       })
       .select()
       .single()

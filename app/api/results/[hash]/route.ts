@@ -41,7 +41,7 @@ export async function GET(
     const { data: lead, error: leadError } = await supabase
       .from('leads')
       .select('id, first_name, company_name')
-      .eq('short_hash', sanitizedHash)
+      .eq('hash', sanitizedHash)
       .single()
 
     if (leadError || !lead) {
