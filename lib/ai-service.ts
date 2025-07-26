@@ -53,13 +53,13 @@ async function callOpenRouter(prompt: string, retries = 3): Promise<string> {
 export async function generateScripts(leadId: string, formData: FormData) {
   try {
     // Step 1: Generate the 20 video titles
-    const questionPrompt = `Act as a market research expert. For a ${formData.businessType} in ${formData.city} that offers these services: ${formData.businessDescription} plus any other core services offered by this type of business, find and list the top 5 questions their potential customers are typing into Google when they are looking to purchase. The questions should be phrased as compelling video titles that are SEO optimized.
+    const questionPrompt = `Act as a market research expert. For a ${formData.businessType} in ${formData.city} that offers these services: ${formData.businessDescription} plus any other core services offered by this type of business, find and list the top 20 questions their potential customers are typing into Google when they are looking to purchase. The questions should be phrased as compelling video titles that are SEO optimized.
 
-Return only a numbered list of 5 titles, one per line, in this exact format:
+Return only a numbered list of 20 titles, one per line, in this exact format:
 1. [Title]
 2. [Title]
 ...
-5. [Title]`
+20. [Title]`
 
     const titlesResponse = await callOpenRouter(questionPrompt)
     
@@ -68,10 +68,10 @@ Return only a numbered list of 5 titles, one per line, in this exact format:
       .split('\n')
       .filter(line => line.match(/^\d+\./))
       .map(line => line.replace(/^\d+\.\s*/, '').trim())
-      .slice(0, 5)
+      .slice(0, 20)
 
-    if (titles.length < 5) {
-      console.warn(`Only generated ${titles.length} titles instead of 5`)
+    if (titles.length < 20) {
+      console.warn(`Only generated ${titles.length} titles instead of 20`)
     }
 
     // Step 2: Generate scripts for each title

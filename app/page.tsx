@@ -147,10 +147,14 @@ export default function LandingPage() {
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
               Finally, a tool that tells you exactly what your customers are asking. Generate instant, high-converting video topics and scripts for your business, and start attracting new clients with video today.
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
+            <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4 relative z-10">
               <Button 
-                onClick={() => setShowModal(true)}
-                className="w-full sm:w-auto bg-primary text-primary-foreground font-semibold py-8 px-10 rounded-md text-lg hover:opacity-90 transition-opacity shadow-lg shadow-primary/20"
+                type="button"
+                onClick={() => {
+                  console.log('Hero button clicked - opening modal');
+                  setShowModal(true);
+                }}
+                className="w-full sm:w-auto bg-primary text-primary-foreground font-semibold py-8 px-10 rounded-md text-lg hover:opacity-90 transition-opacity shadow-lg shadow-primary/20 relative z-20"
               >
                 Get My 20 Free Video Scripts Now
               </Button>

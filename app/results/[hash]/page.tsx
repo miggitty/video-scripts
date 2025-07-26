@@ -274,10 +274,16 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto text-center">
               <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <Button className="w-full sm:w-auto bg-primary text-primary-foreground font-semibold py-8 px-10 rounded-md text-lg hover:opacity-90 transition-opacity shadow-lg shadow-primary/20">
+                <Button 
+                  onClick={() => window.open('https://transformo.io/pricing/', '_blank', 'noopener,noreferrer')}
+                  className="w-full sm:w-auto bg-primary text-primary-foreground font-semibold py-8 px-10 rounded-md text-lg hover:opacity-90 transition-opacity shadow-lg shadow-primary/20"
+                >
                   Start Your Free 7-Day Trial
                 </Button>
-                <Button className="w-full sm:w-auto bg-secondary text-secondary-foreground font-semibold py-8 px-10 rounded-md text-lg hover:opacity-90 transition-opacity shadow-lg border border-border">
+                <Button 
+                  onClick={() => window.open('https://transformo.io/demo/', '_blank', 'noopener,noreferrer')}
+                  className="w-full sm:w-auto bg-secondary text-secondary-foreground font-semibold py-8 px-10 rounded-md text-lg hover:opacity-90 transition-opacity shadow-lg border border-border"
+                >
                   Book a 1-on-1 Demo
                 </Button>
               </div>
