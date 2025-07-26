@@ -25,7 +25,6 @@ export interface Lead {
   marketing_location?: string
   city?: string
   country?: string
-  hash?: string
   ghl_contact_id?: string
   user_id?: string
   created_at: string

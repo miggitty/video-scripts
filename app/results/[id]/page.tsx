@@ -29,24 +29,24 @@ interface Lead {
   company_name: string
 }
 
-export default function ResultsPage({ params }: { params: Promise<{ hash: string }> }) {
+export default function ResultsPage({ params }: { params: Promise<{ id: string }> }) {
   const [scripts, setScripts] = useState<Script[]>([])
   const [lead, setLead] = useState<Lead | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [hash, setHash] = useState<string>('')
+  const [id, setId] = useState<string>('')
   const [showAllScripts, setShowAllScripts] = useState(false)
 
   useEffect(() => {
-    const getHash = async () => {
+    const getId = async () => {
       const resolvedParams = await params
-      setHash(resolvedParams.hash)
+      setId(resolvedParams.id)
     }
-    getHash()
+    getId()
   }, [params])
 
   useEffect(() => {
-    if (!hash) return
+    if (!id) return
 
     const fetchData = async () => {
       try {
@@ -54,7 +54,7 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
         const { data: leadData, error: leadError } = await supabase
           .from('leads')
           .select('id, first_name, company_name')
-          .eq('hash', hash)
+          .eq('id', id)
           .single()
 
         if (leadError || !leadData) {
@@ -113,7 +113,7 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
     }
 
     fetchData()
-  }, [hash])
+  }, [id])
 
   if (loading) {
     return (

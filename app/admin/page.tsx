@@ -346,7 +346,7 @@ export default function AdminDashboard() {
                         </TableCell>
                         <TableCell>{formatDate(lead.created_at)}</TableCell>
                         <TableCell>
-                          <Link href={`/admin/leads/${lead.hash}`}>
+                          <Link href={`/admin/leads/${lead.id}`}>
                             <Button variant="outline" size="sm">
                               <Eye className="w-4 h-4 mr-1" />
                               View Scripts

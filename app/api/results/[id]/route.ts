@@ -10,7 +10,7 @@ const supabase = createClient(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ hash: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Apply rate limiting
@@ -29,19 +29,19 @@ export async function GET(
       )
     }
 
-    const { hash } = await params
+    const { id } = await params
 
-    // Validate and sanitize hash parameter
-    const sanitizedHash = validateInput(hash, 64)
-    if (!sanitizedHash) {
-      return NextResponse.json({ error: 'Valid hash parameter is required' }, { status: 400 })
+    // Validate and sanitize id parameter  
+    const sanitizedId = validateInput(id, 36)
+    if (!sanitizedId) {
+      return NextResponse.json({ error: 'Valid id parameter is required' }, { status: 400 })
     }
 
     // Fetch lead information
     const { data: lead, error: leadError } = await supabase
       .from('leads')
       .select('id, first_name, company_name')
-      .eq('hash', sanitizedHash)
+      .eq('id', sanitizedId)
       .single()
 
     if (leadError || !lead) {

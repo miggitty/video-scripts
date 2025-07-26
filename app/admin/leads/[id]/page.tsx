@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Progress } from '@/components/ui/progress'
-import { ArrowLeft, Building, Mail, Calendar, FileText, Loader2, Target, Heart, Lightbulb } from 'lucide-react'
+import { ArrowLeft, Building, Mail, Calendar, FileText, Loader2, Target } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AdminLeadDetailPage() {
@@ -18,36 +18,36 @@ export default function AdminLeadDetailPage() {
   const [scripts, setScripts] = useState<GeneratedScript[]>([])
   const [error, setError] = useState('')
   const [showAllScripts, setShowAllScripts] = useState(false)
-  const [leadHash, setLeadHash] = useState<string>('')
+  const [leadId, setLeadId] = useState<string>('')
   const router = useRouter()
   const params = useParams()
 
   useEffect(() => {
-    const getHash = async () => {
-      if (params.hash) {
-        const hash = Array.isArray(params.hash) ? params.hash[0] : params.hash
-        console.log('Setting leadHash:', hash)
-        setLeadHash(hash)
+    const getId = async () => {
+      if (params.id) {
+        const id = Array.isArray(params.id) ? params.id[0] : params.id
+        console.log('Setting leadId:', id)
+        setLeadId(id)
       }
     }
-    getHash()
+    getId()
   }, [params])
 
   useEffect(() => {
-    console.log('leadHash changed:', leadHash)
-    if (leadHash) {
+    console.log('leadId changed:', leadId)
+    if (leadId) {
       checkAdminAccessAndLoadData()
     }
-  }, [leadHash])
+  }, [leadId])
 
   const loadLeadData = useCallback(async () => {
     try {
-      console.log('loadLeadData called with leadHash:', leadHash)
+      console.log('loadLeadData called with leadId:', leadId)
       // Get lead data
       const { data: leadData, error: leadError } = await supabase
         .from('leads')
         .select('*')
-        .eq('hash', leadHash)
+        .eq('id', leadId)
         .single()
 
       console.log('Lead query result:', { leadData, leadError })
@@ -72,7 +72,7 @@ export default function AdminLeadDetailPage() {
       console.error('Error loading lead data:', error)
       setError('Failed to load lead data')
     }
-  }, [leadHash])
+  }, [leadId])
 
   const checkAdminAccessAndLoadData = useCallback(async () => {
     try {
@@ -151,7 +151,7 @@ export default function AdminLeadDetailPage() {
               <Building className="w-8 h-8 text-blue-600" />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Lead Details</h1>
-                <p className="text-sm text-gray-500">{lead.business_name}</p>
+                <p className="text-sm text-gray-500">{lead.company_name}</p>
               </div>
             </div>
             <Button variant="outline" onClick={handleSignOut}>
@@ -231,8 +231,8 @@ export default function AdminLeadDetailPage() {
                 <p className="text-sm">{lead.city}, {lead.country}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Lead Hash</label>
-                <p className="text-xs font-mono bg-gray-100 p-1 rounded">{lead.hash}</p>
+                <label className="text-sm font-medium text-gray-500">Lead ID</label>
+                <p className="text-xs font-mono bg-gray-100 p-1 rounded">{lead.id}</p>
               </div>
             </CardContent>
           </Card>
@@ -247,7 +247,7 @@ export default function AdminLeadDetailPage() {
               <span>Generated Video Scripts ({scripts.length})</span>
             </CardTitle>
             <CardDescription>
-              AI-generated video scripts for {lead.business_name}
+              AI-generated video scripts for {lead.company_name}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -265,7 +265,7 @@ export default function AdminLeadDetailPage() {
             {scripts.length > 0 ? (
               <>
                 <Accordion type="single" collapsible className="w-full">
-                  {displayedScripts.map((script, index) => (
+                  {displayedScripts.map((script) => (
                     <AccordionItem key={script.id} value={script.id} className="border-gray-200">
                       <AccordionTrigger className="text-left hover:bg-gray-50 rounded-md px-4 py-4">
                         <div className="flex items-center gap-3 w-full">

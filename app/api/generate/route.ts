@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { generateScripts } from '@/lib/ai-service'
 import { addToGoHighLevel } from '@/lib/gohighlevel'
-import { generateShortHash, validateEmail, validateInput } from '@/lib/utils'
+import { validateEmail, validateInput } from '@/lib/utils'
 import { generateApiLimiter } from '@/lib/rate-limiter'
 
 const supabase = createClient(
@@ -48,9 +48,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
     }
 
-    // Generate unique short hash
-    const shortHash = generateShortHash()
-
     // Create lead in database with sanitized inputs
     const { data: lead, error: leadError } = await supabase
       .from('leads')
@@ -60,8 +57,7 @@ export async function POST(request: NextRequest) {
         email: email,
         business_type: businessType,
         business_description: businessDescription,
-        city: city,
-        hash: shortHash
+        city: city
       })
       .select()
       .single()
@@ -91,7 +87,7 @@ export async function POST(request: NextRequest) {
       console.error('Error adding to GoHighLevel:', error)
     })
 
-    return NextResponse.json({ shortHash })
+    return NextResponse.json({ id: lead.id })
   } catch (error) {
     console.error('Error in generate API:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

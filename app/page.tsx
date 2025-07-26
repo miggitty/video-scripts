@@ -108,8 +108,8 @@ export default function LandingPage() {
       })
 
       if (response.ok) {
-        const { shortHash } = await response.json()
-        window.location.href = `/results/${shortHash}`
+        const { id } = await response.json()
+        window.location.href = `/results/${id}`
       } else {
         throw new Error('Failed to submit form')
       }
