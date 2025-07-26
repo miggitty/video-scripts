@@ -46,6 +46,13 @@ npm run lint
 - Dark mode support via `@media (prefers-color-scheme: dark)`
 - Geist Sans and Geist Mono fonts via next/font/google
 
+#### Typography Standards
+- **H1 Headlines**: Always use `font-extrabold tracking-normal leading-none` for optimal readability
+  - Global CSS rule applied: `h1 { @apply font-extrabold tracking-normal leading-none; }`
+  - This ensures consistent tight line spacing and proper letter spacing across all H1 elements
+  - Use responsive sizing: `text-4xl md:text-5xl lg:text-6xl` for scalable headlines
+  - The `leading-none` class creates tight, readable line spacing that improves visual impact
+
 ### Database & Backend (Supabase)
 - **Local Development**: Fully configured Supabase stack
 - **Database**: PostgreSQL 17 on port 54322

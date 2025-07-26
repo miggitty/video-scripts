@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Progress } from '@/components/ui/progress'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Logo } from '@/components/logo'
-import { Loader2, CheckCircle } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -35,6 +35,7 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [hash, setHash] = useState<string>('')
+  const [showAllScripts, setShowAllScripts] = useState(false)
 
   useEffect(() => {
     const getHash = async () => {
@@ -143,122 +144,154 @@ export default function ResultsPage({ params }: { params: Promise<{ hash: string
 
   const progress = (scripts.length / 20) * 100
   const isComplete = scripts.length >= 20
+  const displayedScripts = showAllScripts ? scripts : scripts.slice(0, 3)
+  const hasMoreScripts = scripts.length > 3
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header with Logo and Theme Toggle */}
-      <div className="flex justify-between items-center pt-8 pb-6 max-w-6xl mx-auto px-4">
-        <div className="flex-1"></div>
-        <Logo />
-        <div className="flex-1 flex justify-end">
+    <div className="bg-background text-foreground font-sans antialiased">
+      {/* Header */}
+      <header className="w-full z-10 py-4 px-4 sm:px-6 lg:px-8 border-b border-border">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center space-x-2">
+            <Logo width={140} height={42} />
+          </div>
           <ThemeToggle />
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">
-            Your 20 Video Scripts Optimized for your business.
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Hi {lead?.first_name}! Your personalized Video Scripts are below for {lead?.company_name}
- Watch the video below to learn how to turn them into a complete marketing campaign.          </p>
-        </div>
-
-        {/* Step 3: Launch Campaign - Position 1 */}
-        <Card className="mb-8 bg-card border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <span className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">3</span>
-              Launch Your Campaign with Transformo
-            </CardTitle>
-            <CardDescription className="text-lg text-muted-foreground">
-              <strong className="text-foreground">Turn One Video Into a Complete Marketing Campaign</strong>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center">
-              <div className="aspect-video bg-background rounded-lg flex items-center justify-center mb-6 max-w-2xl mx-auto border border-border">
-                <p className="text-muted-foreground">Transformo Demo Video</p>
-              </div>
-              
-              <h3 className="text-2xl font-bold text-foreground mb-4">
-                How To Turn One Video Script Into a Complete Weekly Marketing Campaign
-              </h3>
-              <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
-                See how Transformo takes your video and automatically creates blog posts, email newsletters, 
-                and social media updates, then distributes them across the internet for you.
+      <main>
+        {/* Part 1: Deliver the Goods (Gratification) */}
+        <section className="py-16 lg:py-20 bg-muted/50 border-b border-border">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto">
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter text-foreground">
+                Here Are Your <span className="text-primary">20 Free Video Scripts</span>
+              </h1>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Congratulations, {lead?.first_name}! Below are the proven, high-converting video topics and scripts generated just for <span dangerouslySetInnerHTML={{ __html: lead?.company_name || '' }} />.
               </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3">
-                  Start 7-Day Free Trial
-                </Button>
-                <Button variant="outline" size="lg" className="px-8 py-3 border-border text-foreground hover:bg-accent">
-                  Book a Live Demo
-                </Button>
-              </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Step 1: Scripts - Position 2 */}
-        <Card className="mb-8 bg-card border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">1</span>
-              Get Your AI-Generated Scripts
-            </CardTitle>
-            <CardDescription>
-              {isComplete ? (
-                <div className="flex items-center gap-2 text-green-400">
-                  <CheckCircle className="h-4 w-4" />
-                  All 20 scripts generated successfully!
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-muted-foreground">
+            
+            <div className="mt-12 max-w-3xl mx-auto bg-card border border-border rounded-lg shadow-sm p-2 space-y-2">
+              {/* Progress indicator */}
+              {!isComplete && (
+                <div className="p-4 bg-muted/50 rounded-md mb-4">
+                  <div className="flex items-center gap-2 text-muted-foreground mb-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Generating your personalized scripts... ({scripts.length} of 20 complete)
                   </div>
                   <Progress value={progress} className="w-full" />
                 </div>
               )}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {scripts.length > 0 ? (
-              <Accordion type="single" collapsible className="w-full">
-                {scripts.map((script) => (
-                  <AccordionItem key={script.id} value={script.id} className="border-border">
-                    <AccordionTrigger className="text-left text-foreground hover:text-primary">
-                      <div className="flex items-center gap-3">
-                        <span className="bg-muted text-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                          {script.order_index}
-                        </span>
-                        {script.title}
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="bg-muted p-4 rounded-lg">
-                        <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans text-foreground">
-                          {script.script_body}
-                        </pre>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            ) : (
-              <div className="text-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-                <p className="text-muted-foreground">Generating your first script...</p>
+
+              {/* Scripts Accordion */}
+              {scripts.length > 0 ? (
+                <>
+                  <Accordion type="single" collapsible className="w-full">
+                    {displayedScripts.map((script) => (
+                      <AccordionItem key={script.id} value={script.id} className="border-border">
+                        <AccordionTrigger className="text-left text-card-foreground hover:bg-accent rounded-md px-4 py-4">
+                          <div className="flex items-center gap-3 w-full">
+                            <span className="bg-muted text-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0">
+                              {script.order_index}
+                            </span>
+                            <span className="font-semibold">{script.title}</span>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="p-4 text-muted-foreground border-t border-border">
+                            <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
+                              {script.script_body}
+                            </pre>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                  
+                  {/* Show More/Less Button */}
+                  {hasMoreScripts && (
+                    <div className="p-4 text-center border-t border-border">
+                      <Button
+                        onClick={() => setShowAllScripts(!showAllScripts)}
+                        variant="outline"
+                        className="font-semibold"
+                      >
+                        {showAllScripts 
+                          ? `Show Less Scripts` 
+                          : `Show ${scripts.length - 3} More Scripts`
+                        }
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Show placeholder items for remaining scripts when collapsed */}
+                  {!showAllScripts && scripts.length > 3 && scripts.length < 20 && (
+                    <div className="p-4 text-center text-muted-foreground border-t border-border">
+                      ... and {20 - 3} more scripts {scripts.length < 20 ? 'loading and ready to view!' : 'ready to view!'}
+                    </div>
+                  )}
+
+                  {/* Show loading message for remaining scripts when expanded */}
+                  {showAllScripts && scripts.length < 20 && (
+                    <div className="p-4 text-center text-muted-foreground border-t border-border">
+                      ... and {20 - scripts.length} more scripts loading!
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="p-4 text-center text-muted-foreground">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+                  <p>Generating your first script...</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Part 2: Interest & Desire (The Upsell) */}
+        <section className="py-16 lg:py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground max-w-4xl mx-auto">
+              You Have the Scripts. Now, Let&apos;s Turn Them Into <span className="text-primary">Clients</span>.
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
+              Watch this 3-minute demo to see how our AI takes one of your new scripts and automatically creates, edits, and distributes a complete marketing campaign in minutes.
+            </p>
+            
+            <div className="mt-10 max-w-4xl mx-auto">
+              <div className="relative bg-card/50 backdrop-blur-sm border border-border rounded-lg p-2 shadow-xl">
+                <div className="aspect-video bg-input rounded-md flex items-center justify-center">
+                  <p className="text-muted-foreground">Transformo Demo Video</p>
+                </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Part 3: The Irresistible Offer (Action) */}
+        <section className="pb-16 lg:pb-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl mx-auto text-center">
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <Button className="w-full sm:w-auto bg-primary text-primary-foreground font-semibold py-8 px-10 rounded-md text-lg hover:opacity-90 transition-opacity shadow-lg shadow-primary/20">
+                  Start Your Free 7-Day Trial
+                </Button>
+                <Button className="w-full sm:w-auto bg-secondary text-secondary-foreground font-semibold py-8 px-10 rounded-md text-lg hover:opacity-90 transition-opacity shadow-lg border border-border">
+                  Book a 1-on-1 Demo
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-muted/50 border-t border-border">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-muted-foreground text-sm">
+          <p>&copy; 2025 Transformo. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   )
 }

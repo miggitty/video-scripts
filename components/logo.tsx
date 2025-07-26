@@ -18,13 +18,23 @@ export function Logo({ width = 200, height = 60, className = "h-auto" }: LogoPro
     ? '/transformo logo dark.png' 
     : '/transformo logo light.png'
   
+  const handleLogoClick = () => {
+    window.open('https://transformo.io', '_blank', 'noopener,noreferrer')
+  }
+  
   return (
-    <Image
-      src={logoSrc}
-      alt="Transformo Logo"
-      width={width}
-      height={height}
-      className={className}
-    />
+    <button
+      onClick={handleLogoClick}
+      className="transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-sm"
+      aria-label="Visit Transformo.io"
+    >
+      <Image
+        src={logoSrc}
+        alt="Transformo Logo"
+        width={width}
+        height={height}
+        className={className}
+      />
+    </button>
   )
 }
